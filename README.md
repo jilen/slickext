@@ -34,7 +34,7 @@ trait UserRepo { profile: slick.jdbc.JdbcProfile =>
 
   import profile.simple._
 
-  @table
+  @table[User](tanleName = "user")
   class Users
   ...
 }
