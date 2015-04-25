@@ -10,7 +10,7 @@ class TableSpec extends FlatSpec with Matchers with Repo with BeforeAndAfterAll 
   import profile.simple._
 
   override def beforeAll() = DB.withSession { implicit session =>
-    (SmallTables.ddl ++ LargeTables.ddl).createStatements.foreach(println)
+    (SmallTables.ddl ++ LargeTables.ddl).create
   }
 
   val DB = {
