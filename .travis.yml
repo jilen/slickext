@@ -1,0 +1,13 @@
+language: scala
+
+scala:
+  - 2.11.7
+
+jdk:
+  - openjdk7
+
+script:
+  -sbt clean coverage test
+  -sbt coverageReport
+  -sbt coverageAggregate
+  -sbt codacyCoverage
