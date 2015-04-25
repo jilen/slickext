@@ -31,7 +31,10 @@ object SlickExtMacros {
 
     def getTableName(params: List[Tree]): String = {
       params.map(decodeAnnotateParam(_)).collectFirst {
-        case (name, v) if name == "tableName" => v.toString
+        case (name, v) if name == "tableName" => {
+          val Literal(Constant(name: String)) = v
+          name
+        }
       }.getOrElse(paramType.toString)
     }
 
@@ -47,15 +50,22 @@ object SlickExtMacros {
           name.decodedName.toString
       }
     }
+    
+    def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
+      val HNil = q"HNil": Tree
+      elems.toList.reverse.foldLeft(HNil) { (list, c) =>
+        q"$c :: $list"
+      }
+    }
 
     def getTableClass(tableClassDecls: ClassDef) = {
       val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = tableClassDecls
       val (productType, productFields) = typeInfo(paramType)
       val productCompanionType = paramType.typeSymbol.companion
 
-      if(productFields.size > 22) {
+      /*if(productFields.size > 22) {
         c.abort(c.enclosingPosition, "Only support 1-22 case class")
-      }
+      }*/
 
       val tableName = getTableName(params)
 
@@ -84,12 +94,19 @@ object SlickExtMacros {
       }
 
       val columnNames = productFields.map(_.name)
+      
+      val columnsHlist = hlistConcat(columnNames)
+      val fieldsMap = productFields.zipWithIndex.map{ case (_, index) => q"""x($index)""" }
+      val fieldsPropertyNames = productFields.zipWithIndex.map{ case (fieldName, index) => q"""x.$fieldName""" }
+      val fieldsHilst = hlistConcat(fieldsPropertyNames)
+      
+      val productCompanion = productType.typeSymbol.companion
 
       q"""
            $mods class $tpname(tag: Tag) extends Table[$productType](tag, $tableName) {
            ..$stats
            ..$columns
-           def * = (..$columnNames) <> ((${productCompanionType}.apply _).tupled, ${productCompanionType}.unapply)
+           def * = ($columnsHlist).shaped <> ( { case x => $productCompanion(..$fieldsMap) }, { x: $productType => Option($fieldsHilst) })
           }
 
           val ${tpname.toTermName} = TableQuery[${tpname}]

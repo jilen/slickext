@@ -1,13 +1,14 @@
 package slick.ext
 
 import slick.ext.macros._
+import scala.slick.collection.heterogenous._
 
 trait Repo {
 
   val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
   val DB: Database
-
+  
   @table[SmallTable](tableName = "smalluser")
   class SmallTables
 
@@ -21,4 +22,5 @@ trait Repo {
   def insertLargeUser(user: LargeTable) = DB.withSession { implicit session =>
     LargeTables.insert(user)
   }
+  
 }

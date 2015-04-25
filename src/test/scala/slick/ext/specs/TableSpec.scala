@@ -13,9 +13,9 @@ class TableSpec extends FlatSpec with Matchers with Repo with BeforeAndAfterAll 
     (SmallTables.ddl ++ LargeTables.ddl).create
   }
 
-  val DB = {
+  override val DB = {
     val datasource = new JdbcDataSource()
-    datasource.setUrl("jdbc:h2:mem:test")
+    datasource.setUrl("jdbc:h2:mem:slickextTest;DB_CLOSE_DELAY=-1")
     Database.forDataSource(datasource)
   }
 
