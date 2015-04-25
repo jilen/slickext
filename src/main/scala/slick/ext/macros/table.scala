@@ -48,14 +48,31 @@ object SlickExtMacros {
       }
     }
 
+    def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
+      val HNil = q"HNil": Tree
+      elems.toList.reverse.foldLeft(HNil) { (list, c) =>
+        q"$c :: $list"
+      }
+    }
+
+    def genHListMapping(columns: Iterable[TermName], productType: Type, productCompType: Symbol) = {
+
+      val hlist = hlistConcat(columns)
+      val columnElems = (0 until columns.size).map(i => q"x($i)")
+      val productHList = hlistConcat(columns.map(n =>q"x.$n"))
+      val toProduct = q"{case x => $productCompType(..$columnElems)}"
+      val fromProduct = q"{x: $productType => Option($productHList)}"
+      q"def * = ($hlist).shaped <> ($toProduct, $fromProduct)"
+    }
+
+    def genSimpleMapping(columns: Iterable[TermName], productCompanionType: Symbol) = {
+      q"def * = (..$columns) <> ((${productCompanionType}.apply _).tupled, ${productCompanionType}.unapply)"
+    }
+
     def getTableClass(tableClassDecls: ClassDef) = {
       val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = tableClassDecls
       val (productType, productFields) = typeInfo(paramType)
       val productCompanionType = paramType.typeSymbol.companion
-
-      if(productFields.size > 22) {
-        c.abort(c.enclosingPosition, "Only support 1-22 case class")
-      }
 
       val tableName = getTableName(params)
 
@@ -85,11 +102,17 @@ object SlickExtMacros {
 
       val columnNames = productFields.map(_.name)
 
+      val mapping = if(columnNames.size <= 22)
+        genSimpleMapping(columnNames, productCompanionType)
+      else
+        genHListMapping(columnNames, productType, productCompanionType)
+
       q"""
+          import scala.slick.collection.heterogenous._
            $mods class $tpname(tag: Tag) extends Table[$productType](tag, $tableName) {
            ..$stats
            ..$columns
-           def * = (..$columnNames) <> ((${productCompanionType}.apply _).tupled, ${productCompanionType}.unapply)
+           $mapping
           }
 
           val ${tpname.toTermName} = TableQuery[${tpname}]
