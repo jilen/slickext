@@ -2,10 +2,23 @@ package slick.ext
 
 import slick.ext.macros._
 
-trait UserRepo {
+trait Repo {
+
   val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
+  val DB: Database
 
-  @table[User](tableName = "user")
-  class Users
+  @table[SmallTable](tableName = "smalluser")
+  class SmallTables
+
+  @table[LargeTable](tableName = "largeuser")
+  class LargeTables
+
+  def insertSmallUser(user: SmallTable) = DB.withSession { implicit session =>
+    SmallTables.insert(user)
+  }
+
+  def insertLargeUser(user: LargeTable) = DB.withSession { implicit session =>
+    LargeTables.insert(user)
+  }
 }
