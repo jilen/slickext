@@ -8,10 +8,10 @@ trait Repo {
   import profile.simple._
   val DB: Database
 
-  @table[SmallTable](tableName = "smalluser")
+  @table[SmallTable]
   class SmallTables
 
-  @table[LargeTable](tableName = "largeuser")
+  @table[LargeTable]
   class LargeTables
 
   def insertSmallUser(user: SmallTable) = DB.withSession { implicit session =>
