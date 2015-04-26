@@ -1,6 +1,7 @@
 # slickext
 [![Codacy Badge](https://www.codacy.com/project/badge/838cc1f9b9ae4397a3961f9fb1a790fa)](https://www.codacy.com/app/jilen-zhang/slickext)
 [![Build Status](https://travis-ci.org/jilen/slickext.svg?branch=master)](https://travis-ci.org/jilen/slickext)
+
 Slick extensions, currently only auto-mapping macros are implemented
 
 ## Auto mapping for case class
