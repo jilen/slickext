@@ -47,4 +47,5 @@ trait UserRepo { profile: slick.jdbc.JdbcProfile =>
 + slick 2.1.0 (may or may not work with other version)
 
 ## Contributors
-+ jilen
++ [jilen](https://github.com/jilen)
++ [djx314](https://github.com/djx314)
