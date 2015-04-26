@@ -1,9 +1,7 @@
 # slickext
 Slick extensions, currently only auto-mapping macros are implemented
 
-## Auto mapping for small case class (with less than 22 fields)
-
-### Getting start
+## Auto mapping for case class
 
 For a `case class`
 ```scala
