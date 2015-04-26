@@ -1,4 +1,7 @@
 # slickext
+[![Codacy Badge](https://www.codacy.com/project/badge/838cc1f9b9ae4397a3961f9fb1a790fa)](https://www.codacy.com/app/jilen-zhang/slickext)
+[![Build Status](https://travis-ci.org/jilen/slickext.svg?branch=master)](https://travis-ci.org/jilen/slickext)
+
 Slick extensions, currently only auto-mapping macros are implemented
 
 ## How to get this tiny library
@@ -57,8 +60,12 @@ trait Repo {
 The `macro` will auto transform the `case class` fields in a `snake case` manner
 
 
-#### Requirements
+## Requirements
 + sbt 0.13.x
 + scala 2.11.6 (may work with other scala 2.11.x, but you may need build it yourself)
 + slick 2.1.0 (may or may not work with other version)
 + macro paradise compiler plugin
+
+## Contributors
++ [jilen](https://github.com/jilen)
++ [djx314](https://github.com/djx314)
