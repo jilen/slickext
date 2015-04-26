@@ -6,6 +6,9 @@ scala:
 jdk:
   - openjdk7
 
+env:
+  - CODACY_PROJECT_TOKEN=d18669bd85664eb5ab481815723d2209
+  
 script:
   - sbt clean coverage test
   - sbt coverageReport

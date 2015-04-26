@@ -8,8 +8,10 @@ trait Repo {
   import profile.simple._
   val DB: Database
 
-  @table[SmallTable]
-  class SmallTables
+  @table[SmallTable](tableName = "foo_table_name")
+  class SmallTables {
+    def id = column[Option[Long]]("small_table_id")
+  }
 
   @table[LargeTable]
   class LargeTables
