@@ -9,6 +9,12 @@ Just add bintray repo
 ```
 resolvers += "Jilen Bintray Repo" at "http://dl.bintray.com/jilen/maven"
 ```
+Then includes the dependency and compiler plugin
+```
+libraryDependencies += "slick-ext" %% "slick-ext" % "0.0.1"
+
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+```
 ## Usage
 
 For a case class
@@ -62,8 +68,8 @@ The `macro` will auto transform the `case class` fields in a `snake case` manner
 
 ## Requirements
 + sbt 0.13.x
-+ scala 2.11.6 (may work with other scala 2.11.x, but you may need build it yourself)
-+ slick 2.1.0 (may or may not work with other version)
++ scala 2.11.6 (I believe it works at least with 2.11.4, 2.11.5, 2.11.6)
++ slick 2.1.0 (May or may not work with other version)
 + macro paradise compiler plugin
 
 ## Contributors
