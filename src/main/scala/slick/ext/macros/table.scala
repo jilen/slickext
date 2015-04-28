@@ -136,6 +136,6 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def snakify(name: String) = {
-    "([a-z\\d])([A-Z])".r.replaceAllIn(name, "$1_$2").toLowerCase()
+    "(?<!^)([A-Z\\d])".r.replaceAllIn(name, "_$1").toLowerCase()
   }
 }
