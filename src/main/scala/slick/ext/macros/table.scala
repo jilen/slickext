@@ -41,7 +41,6 @@ class TableMacroImpl(val c: Context) {
     val allColNames =  info.productFields.map(_.name)
     val mapping = if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else genHListMapping(info, allColNames)
     q"""
-      import scala.slick.collection.heterogenous._
       $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
         ..$stats
         ..$generatedCols
@@ -126,7 +125,7 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"HNil": Tree
+    val HNil = q"scala.slick.collection.heterogenous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }
