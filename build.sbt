@@ -1,6 +1,6 @@
 name := "slick-ext"
 
-version := "0.0.1-SNAPSHOT"
+version := "0.0.2-SNAPSHOT"
 
 scalaVersion := "2.11.6"
 
@@ -15,3 +15,7 @@ libraryDependencies ++= Seq(
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 
 scalacOptions ++= Seq("-deprecation")
+
+seq(bintraySettings:_*)
+
+licenses += ("MIT", url("http://opensource.org/licenses/MIT"))

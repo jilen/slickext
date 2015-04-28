@@ -135,7 +135,7 @@ class TableMacroImpl(val c: Context) {
     c.typecheck(q"??? : $tree").tpe
   }
 
-  private def snakify(name: String) = "[A-Z\\d]".r.replaceAllIn(name, {m =>
-    "_" + m.group(0).toLowerCase()
-  })
+  private def snakify(name: String) = {
+    "([a-z\\d])([A-Z])".r.replaceAllIn(name, "$1_$2").toLowerCase()
+  }
 }

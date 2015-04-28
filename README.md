@@ -4,48 +4,73 @@
 
 Slick extensions, currently only auto-mapping macros are implemented
 
-## Auto mapping for case class
-
-For a `case class`
-```scala
-case class User(id: Option[Long], firstName: String, lastName: String, gender: String)
+## How to get this tiny library
+Just add bintray repo
 ```
-We must write an `Service` or `Repo` like this
+resolvers += "Jilen Bintray Repo" at "http://dl.bintray.com/jilen/maven"
+```
+Then includes the dependency and compiler plugin
+```
+libraryDependencies += "slick-ext" %% "slick-ext" % "0.0.1"
+
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+```
+## Usage
+
+For a case class
 ```scala
-trait UserRepo { profile: slick.jdbc.JdbcProfile =>
+case class LargeTable(
+  id: Option[Long],
+  a1: Int,
+  a2: Int,
+  a3: Int,
+  a4: Int,
+  a5: Int,
+  a6: Int,
+  a7: Int,
+  a8: Int,
+  a9: Int,
+  a10: Int,
+  a11: Int,
+  a12: Int,
+  a13: Int,
+  a14: Int,
+  a15: Int,
+  a16: Int,
+  a17: Int,
+  a18: Int,
+  a19: Int,
+  a20: Int,
+  a21: Int,
+  a22: Int,
+  a23: Int)
+```
 
+We can just write a `repository` or `service` component as
+```scala
+trait Repo {
+
+  val profile: scala.slick.driver.JdbcProfile
   import profile.simple._
+  val DB: Database
 
-  class Users(tag: Tag) extends Table[User](tag, "user") {
-    def id = column[Option[Long]]("id", O.AutoInc, O.PrimaryKey)
-    def name = column[String]("first_name")
-    def birth = column[String]("last_name")
-    def gender = column[String]("gender")
-    def * = (id, name, birth, gender) <> (User.tupled, User.unapply)
+  @table[LargeTable]
+  class LargeTables
+
+  def insertLargeUser(user: LargeTable) = DB.withSession { implicit session =>
+    LargeTables.insert(user)
   }
 
-  val Users = TableQuery[Users]
-  ...
-}
 ```
 
-Now with the macro annotation `slick.ext.table`, we just need
-```scala
-trait UserRepo { profile: slick.jdbc.JdbcProfile =>
+The `macro` will auto transform the `case class` fields in a `snake case` manner
 
-  import profile.simple._
 
-  @table[User](tanleName = "user")
-  class Users
-  ...
-}
-
-```
-
-#### Requirements
+## Requirements
 + sbt 0.13.x
-+ scala 2.11.6 (may work with other scala 2.11.x, but you may need build it yourself)
-+ slick 2.1.0 (may or may not work with other version)
++ scala 2.11.6 (I believe it works at least with 2.11.4, 2.11.5, 2.11.6)
++ slick 2.1.0 (May or may not work with other version)
++ macro paradise compiler plugin
 
 ## Contributors
 + [jilen](https://github.com/jilen)
