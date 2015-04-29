@@ -18,7 +18,6 @@ class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with Be
   val largeTableDDL = LargeTables.ddl.createStatements.toSet
 
   override def beforeAll() = DB.withSession { implicit session =>
-    (SmallTables.ddl ++ LargeTables.ddl).createStatements.foreach(println)
     (SmallTables.ddl ++ LargeTables.ddl).create
   }
 
@@ -40,11 +39,11 @@ class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with Be
   }
 
   it should "use custom table name" in {
-    smallTableDDL.loneElement should include("foo_table_name")
+    smallTableDDL.loneElement should include("\"foo_table_name\"")
   }
 
   it should "use name from type" in {
-    largeTableDDL.loneElement should include("large_table")
+    largeTableDDL.loneElement should include("\"large_table\"")
   }
 
   it should "use custom column" in {
