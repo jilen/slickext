@@ -11,7 +11,7 @@ resolvers += "Jilen Bintray Repo" at "http://dl.bintray.com/jilen/maven"
 ```
 Then includes the dependency and compiler plugin
 ```
-libraryDependencies += "slick-ext" %% "slick-ext" % "0.0.1"
+libraryDependencies += "slick-ext" %% "slick-ext" % "0.0.2"
 
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 ```
