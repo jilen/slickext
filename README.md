@@ -17,40 +17,42 @@ addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion
 ```
 ## Usage
 
-For a case class
+For a case class (even with more than 22 fields)
 ```scala
 case class LargeTable(
-  id: Option[Long],
-  a1: Int,
-  a2: Int,
-  a3: Int,
-  a4: Int,
-  a5: Int,
-  a6: Int,
-  a7: Int,
-  a8: Int,
-  a9: Int,
-  a10: Int,
-  a11: Int,
-  a12: Int,
-  a13: Int,
-  a14: Int,
-  a15: Int,
-  a16: Int,
-  a17: Int,
-  a18: Int,
-  a19: Int,
-  a20: Int,
-  a21: Int,
-  a22: Int,
-  a23: Int)
+id: Option[Long],
+a1: Int,
+a2: Int,
+a3: Int,
+a4: Int,
+a5: Int,
+a6: Int,
+a7: Int,
+a8: Int,
+a9: Int,
+a10: Int,
+a11: Int,
+a12: Int,
+a13: Int,
+a14: Int,
+a15: Int,
+a16: Int,
+a17: Int,
+a18: Int,
+a19: Int,
+a20: Int,
+a21: Int,
+a22: Int,
+a23: Int)
 ```
 
 We can just write a `repository` or `service` component as
 ```scala
+import slickext.macros.table
+
 trait Repo {
 
-  val profile: scala.slick.driver.JdbcProfile
+val profile: slick.driver.JdbcProfile
   import profile.simple._
   val DB: Database
 
@@ -64,6 +66,16 @@ trait Repo {
 ```
 
 The `macro` will auto transform the `case class` fields in a `snake case` manner
+
+## Mapping details
++ Table name
+  * `LargeTable` is mapped to `large_table`
+  * Table name could be override by `@table(tableName = "some_table")`
++ Field map
+  * 'id: Option[Long]' or 'id: Option[Int]' is mapped to `column[Option[X]]("id", O.PrmaryKey, O.AutoInc)`
+  * Normal field like `fistName` is mapped to 'first_name'
+  * Column define could be override manually see the test
+
 
 
 ## Requirements

@@ -1,11 +1,11 @@
-package slick.ext
+package slickext
 
 import org.scalatest._
 import org.h2.jdbcx.JdbcDataSource
 
 class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with BeforeAndAfterAll {
 
-  val profile = scala.slick.driver.H2Driver
+  val profile = slick.driver.H2Driver
   import profile.simple._
 
   val DB = {

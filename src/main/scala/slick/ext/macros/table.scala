@@ -1,4 +1,4 @@
-package slick.ext.macros
+package slickext.macros
 
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
@@ -125,7 +125,7 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"scala.slick.collection.heterogenous.HNil": Tree
+    val HNil = q"slick.collection.heterogenous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }
