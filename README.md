@@ -73,7 +73,7 @@ The `macro` will auto transform the `case class` fields in a `snake case` manner
   * Table name could be override by `@table(tableName = "some_table")`
 + Field map
   * `id: Option[Long]` or `id: Option[Int]` is mapped to `column[Option[X]]("id", O.PrmaryKey, O.AutoInc)`
-  * Normal field like `fistName` is mapped to 'first_name'
+  * Normal field like `fistName` is mapped to `first_name`
   * Column define could be override manually see the test
 
 
