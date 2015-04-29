@@ -1,4 +1,4 @@
-package slick.ext.macros
+package slickext.macros
 
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
@@ -8,8 +8,6 @@ import scala.annotation.StaticAnnotation
 class table[T](tableName: String = "") extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro TableMacroImpl.impl
 }
-
-
 
 class TableMacroImpl(val c: Context) {
 
@@ -32,7 +30,7 @@ class TableMacroImpl(val c: Context) {
   private def genCode(classDef: ClassDef) = {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
     val info = extractTableInfo()
-    val tableName = Literal(Constant(getTableName(info, tpname.decodedName.toString)))
+    val tableName = Literal(Constant(getTableName(info)))
     val definedColumns = getDefinedColumns(stats)
     val notDefinedFields = info.productFields.filterNot {
       case f => definedColumns.contains(f.name.decodedName.toString)
@@ -114,18 +112,18 @@ class TableMacroImpl(val c: Context) {
     }
   }
 
-  private def getTableName(info: TableInfo, tpName: String): String = {
+  private def getTableName(info: TableInfo): String = {
     def decodeAnnotateParam(param: Tree) = {
       val q"$fname = $fv" = param
       fname.toString -> fv
     }
     info.annotationParams.map(decodeAnnotateParam(_)).collectFirst {
       case ("tableName", Literal(Constant(name: String))) if name != "" => name
-    }.getOrElse(snakify(tpName))
+    }.getOrElse(snakify(info.productType.typeSymbol.name.decodedName.toString))
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"scala.slick.collection.heterogenous.HNil": Tree
+    val HNil = q"slick.collection.heterogenous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }

@@ -1,4 +1,4 @@
-package slick.ext
+package slickext
 
 case class SmallTable(
   id: Option[Long],

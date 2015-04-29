@@ -1,10 +1,10 @@
-package slick.ext
+package slickext
 
-import slick.ext.macros._
+import slickext.macros._
 
 trait Repo {
 
-  val profile: scala.slick.driver.JdbcProfile
+  val profile: slick.driver.JdbcProfile
   import profile.simple._
   val DB: Database
 
