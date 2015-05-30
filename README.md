@@ -84,6 +84,13 @@ The `macro` will auto transform the `case class` fields in a `snake case` manner
 + slick 2.1.0 (May or may not work with other version)
 + macro paradise compiler plugin
 
+## Roadmap
++ slick 3.0 support
++ better error reporting
+
+
+
+
 ## Contributors
 + [jilen](https://github.com/jilen)
 + [djx314](https://github.com/djx314)
