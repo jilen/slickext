@@ -4,6 +4,12 @@
 
 Slick extensions, currently only auto-mapping macros are implemented
 
+## Choose slick Version
+[Slick 2.x.x](https://github.com/jilen/slickext/tree/v0.0.2)
+[Slick 3.x.x](https://github.com/jilen/slickext)
+
+
+
 ## How to get this tiny library
 Just add bintray repo
 ```
@@ -11,7 +17,7 @@ resolvers += "Jilen Bintray Repo" at "http://dl.bintray.com/jilen/maven"
 ```
 Then includes the dependency and compiler plugin
 ```
-libraryDependencies += "slick-ext" %% "slick-ext" % "0.0.2"
+libraryDependencies += "slickext" %% "slickext" % "0.0.3"
 
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 ```
