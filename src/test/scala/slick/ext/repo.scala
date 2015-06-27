@@ -5,7 +5,7 @@ import slickext.macros._
 trait Repo {
 
   val profile: slick.driver.JdbcProfile
-  import profile.simple._
+  import profile.api._
   val DB: Database
 
   @table[SmallTable](tableName = "foo_table_name")
@@ -16,11 +16,7 @@ trait Repo {
   @table[LargeTable]
   class LargeTables
 
-  def insertSmallUser(user: SmallTable) = DB.withSession { implicit session =>
-    SmallTables.insert(user)
-  }
+  def insertSmallUser(user: SmallTable) = DB.run(SmallTables += user)
 
-  def insertLargeUser(user: LargeTable) = DB.withSession { implicit session =>
-    LargeTables.insert(user)
-  }
+  def insertLargeUser(user: LargeTable) = DB.run(LargeTables += user)
 }
