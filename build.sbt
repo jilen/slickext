@@ -1,14 +1,14 @@
-name := "slick-ext"
+name := "slickext"
 
-version := "0.0.2"
+version := "0.0.3"
 
 scalaVersion := "2.11.6"
 
 
 libraryDependencies ++= Seq(
   "org.scala-lang"     % "scala-compiler" % scalaVersion.value,
-  "com.typesafe.slick" %% "slick"         % "2.1.0",
-  "org.scalatest"      %% "scalatest"     % "2.2.1"              % "test",
+  "com.typesafe.slick" %% "slick"         % "3.0.0",
+  "org.scalatest"      %% "scalatest"     % "2.2.4"              % "test",
   "com.h2database"     %   "h2"           % "1.4.187"            % "test"
 )
 

@@ -22,14 +22,18 @@ class TableMacroImpl(val c: Context) {
 
   def impl(annottees: c.Expr[Any]*): c.Expr[Any] = annottees.map(_.tree) match {
     case (classDecl: ClassDef) :: Nil =>
-      c.Expr(genCode(classDecl))
+      extractTableInfo() match {
+        case Right(info) =>
+          c.Expr(genCode(classDecl, info))
+        case Left(err) =>
+          c.abort(c.enclosingPosition, err)
+      }
     case decl =>
       c.abort(c.enclosingPosition, "Underlying class must not be top-level and without companion")
   }
 
-  private def genCode(classDef: ClassDef) = {
+  private def genCode(classDef: ClassDef, info: TableInfo) = {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
-    val info = extractTableInfo()
     val tableName = Literal(Constant(getTableName(info)))
     val definedColumns = getDefinedColumns(stats)
     val notDefinedFields = info.productFields.filterNot {
@@ -84,18 +88,20 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def extractTableInfo() = {
-    val (pType, pCompType, params) =  c.macroApplication match {
+    c.macroApplication match {
       case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, Nil)
+        val pType = typeOfTree(paramTypeTree)
+        val pCompType = pType.companion
+        val pFields = getProductFields(pType)
+        Right(TableInfo(pType, pCompType, pFields, Nil))
       case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, params)
+        val pType = typeOfTree(paramTypeTree)
+        val pCompType = pType.companion
+        val pFields = getProductFields(pType)
+        Right(TableInfo(pType, pCompType, pFields, params))
+      case _ =>
+        Left(c.macroApplication.toString + " illegal macro application, correct usage @table[SomeType]")
     }
-    val productFields = getProductFields(pType)
-    TableInfo(pType, pCompType, productFields, params)
   }
 
   private def getProductFields(productTpe: Type) = {
@@ -123,7 +129,7 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"slick.collection.heterogenous.HNil": Tree
+    val HNil = q"slick.collection.heterogeneous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }

@@ -1,12 +1,21 @@
 package slickext
 
-import org.scalatest._
 import org.h2.jdbcx.JdbcDataSource
+import org.scalatest._
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time._
+import scala.concurrent.duration._
+import scala.concurrent.Await
 
-class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with BeforeAndAfterAll {
+class RepoSpec extends FlatSpec
+    with Matchers
+    with ScalaFutures
+    with LoneElement
+    with Repo
+    with BeforeAndAfterAll {
 
   val profile = slick.driver.H2Driver
-  import profile.simple._
+  import profile.api._
 
   val DB = {
     val datasource = new JdbcDataSource()
@@ -14,17 +23,17 @@ class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with Be
     Database.forDataSource(datasource)
   }
 
-  val smallTableDDL = SmallTables.ddl.createStatements.toSet
-  val largeTableDDL = LargeTables.ddl.createStatements.toSet
+  val smallTableDDL = SmallTables.schema.createStatements.toSet
+  val largeTableDDL = LargeTables.schema.createStatements.toSet
 
-  override def beforeAll() = DB.withSession { implicit session =>
-    (SmallTables.ddl ++ LargeTables.ddl).create
-  }
+  override def beforeAll() = Await.result(
+    DB.run((SmallTables.schema ++ LargeTables.schema).create),
+    1.seconds)
 
 
   "User repo" should "insert into small table" in {
     val small = SmallTable(None, 1, 2, 3, 4)
-    insertSmallUser(small) should be(1)
+    insertSmallUser(small).futureValue  should be(1)
   }
 
   it should "insert into large table" in {
@@ -35,7 +44,7 @@ class RepoSpec extends FlatSpec with Matchers with LoneElement with Repo with Be
       11, 12, 13, 14,15,
       16, 17, 18, 19, 20,
       21, 22, 23)
-    insertLargeUser(large) should be(1)
+    insertLargeUser(large).futureValue should be(1)
   }
 
   it should "use custom table name" in {
