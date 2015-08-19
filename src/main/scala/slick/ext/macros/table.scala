@@ -39,12 +39,12 @@ class TableMacroImpl(val c: Context) {
     val allColNames =  info.productFields.map(_.name)
     val mapping = if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else genHListMapping(info, allColNames)
     q"""
-      $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
+      $mods class $tpname(tag: Tag, name: String) extends Table[${info.productType}](tag, name) {
         ..$stats
         ..$generatedCols
         $mapping
       }
-      val ${tpname.toTermName} = TableQuery[${tpname}]
+      object ${tpname.toTermName} extends TableQuery[${tpname}]({tag: Tag => new $tpname(tag, $tableName)})
       """
 
   }
