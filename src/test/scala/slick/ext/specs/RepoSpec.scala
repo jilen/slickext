@@ -34,6 +34,7 @@ class RepoSpec extends FlatSpec
   "User repo" should "insert into small table" in {
     val small = SmallTable(None, 1, 2, 3, 4)
     insertSmallUser(small).futureValue  should be(1)
+    update(small)
   }
 
   it should "insert into large table" in {
@@ -44,6 +45,7 @@ class RepoSpec extends FlatSpec
       11, 12, 13, 14,15,
       16, 17, 18, 19, 20,
       21, 22, 23)
+
     insertLargeUser(large).futureValue should be(1)
   }
 
