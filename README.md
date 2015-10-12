@@ -85,7 +85,6 @@ trait Repo {
 
   def update(user: SmallTable) = {
     val q = SmallTables.filter(_.id === user.id).update(user)
-    println(SmallTables.filter(_.id === user.id).getClass())
     DB.run(q)
   }
 }
