@@ -17,7 +17,7 @@ resolvers += "Jilen Bintray Repo" at "http://dl.bintray.com/jilen/maven"
 ```
 Then includes the dependency and compiler plugin
 ```
-libraryDependencies += "slickext" %% "slickext" % "0.0.3"
+libraryDependencies += "slickext" %% "slickext" % "0.0.4"
 
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
 ```
@@ -54,21 +54,33 @@ a23: Int)
 
 We can just write a `repository` or `service` component as
 ```scala
-import slickext.macros.table
+
+import slickext.macros._
 
 trait Repo {
 
-val profile: slick.driver.JdbcProfile
-  import profile.simple._
+  val profile: slick.driver.JdbcProfile
+  import profile.api._
   val DB: Database
+
+  @table[SmallTable](tableName = "foo_table_name")
+  class SmallTables {
+    def id = column[Option[Long]]("small_table_id")
+  }
 
   @table[LargeTable]
   class LargeTables
 
-  def insertLargeUser(user: LargeTable) = DB.withSession { implicit session =>
-    LargeTables.insert(user)
-  }
+  def insertSmallUser(user: SmallTable) = DB.run(SmallTables += user)
 
+  def insertLargeUser(user: LargeTable) = DB.run(LargeTables += user)
+
+  def update(user: SmallTable) = {
+    val q = SmallTables.filter(_.id === user.id).update(user)
+    println(SmallTables.filter(_.id === user.id).getClass())
+    DB.run(q)
+  }
+}
 ```
 
 The `macro` will auto transform the `case class` fields in a `snake case` manner
@@ -86,13 +98,9 @@ The `macro` will auto transform the `case class` fields in a `snake case` manner
 
 ## Requirements
 + sbt 0.13.x
-+ scala 2.11.6 (I believe it works at least with 2.11.4, 2.11.5, 2.11.6)
-+ slick 2.1.0 (May or may not work with other version)
++ scala 2.11.x (I believe it works at least with 2.11.4, 2.11.5, 2.11.6, 2.11.7)
++ slick 3.x.x
 + macro paradise compiler plugin
-
-## Roadmap
-+ slick 3.0 support
-+ better error reporting
 
 
 
