@@ -23,7 +23,15 @@ addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion
 ```
 ## Usage
 
-For a case class (even with more than 22 fields)
+For a case classes (even with more than 22 fields)
+```scala
+case class SmallTable(
+  id: Option[Long],
+  a1: Int,
+  a2: Int,
+  a3: Int,
+  a4: Int)
+```
 ```scala
 case class LargeTable(
 id: Option[Long],
