@@ -43,7 +43,7 @@ class TableMacroImpl(val c: Context) {
     val allColNames =  info.productFields.map(_.name)
     val mapping = if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else genHListMapping(info, allColNames)
     q"""
-      $mods class $tpname(tag: Tag, name: String) extends Table[${info.productType}](tag, name) {
+      $mods class $tpname(tag: Tag, slickextTbName: String) extends Table[${info.productType}](tag, slickextTbName) {
         ..$stats
         ..$generatedCols
         $mapping
