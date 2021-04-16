@@ -2,7 +2,8 @@ name := "slickext"
 
 version := "0.0.4"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.12"
+organization := "slickext"
 
 
 libraryDependencies ++= Seq(
@@ -12,10 +13,8 @@ libraryDependencies ++= Seq(
   "com.h2database"     %   "h2"           % "1.4.187"            % "test"
 )
 
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
 
 scalacOptions ++= Seq("-deprecation")
 
-seq(bintraySettings:_*)
-
-licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
+publishMavenStyle := true
