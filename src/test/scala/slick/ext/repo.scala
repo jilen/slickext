@@ -4,7 +4,7 @@ import slickext.macros._
 
 trait Repo {
 
-  val profile: slick.driver.JdbcProfile
+  val profile: slick.jdbc.JdbcProfile
   import profile.api._
   val DB: Database
 
